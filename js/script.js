@@ -5,30 +5,13 @@
 
 $(function () {
         
-		(function() {
-  var flickerAPI = "http://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?";
-  $.getJSON( flickerAPI, {
-    tags: "mount rainier",
-    tagmode: "any",
-    format: "json"
-  })
-  .done(function( data ) {
-    $.each( data.items, function( i, item ) {
-      $( "<img/>" ).attr( "src", item.media.m ).appendTo( "#images" );
-      if ( i === 3 ) {
-        return false;
-      }
-    });
-  });
-})();
-
 		url = "https://spreadsheets.google.com/feeds/list/0AiE7hdFAKPqldE1yOUwzUFh0VkNOVVZ1TWhseGRkdkE/od6/public/values?alt=json-in-script&callback=?"
-		death_list = []; // all the chapters
+		death_list = []; // all the deaths logged
 		
 	
 		$.getJSON(url,
 		function(data) {
-			// parse JSON and push data into the list of grants
+			// parse JSON and push data into the list of Spelunky deaths
 			for (i=0;i<data.feed.entry.length;i++) {
 				var entry = data.feed.entry[i];
 				var death = {
