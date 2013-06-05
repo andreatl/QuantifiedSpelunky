@@ -4,98 +4,71 @@
 // http://github.com/andreatl/QuantifiedSpelunky
 
 $(function () {
-        
-		(function() {
-  var flickerAPI = "http://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?";
-  $.getJSON( flickerAPI, {
-    tags: "mount rainier",
-    tagmode: "any",
-    format: "json"
-  })
-  .done(function( data ) {
-    $.each( data.items, function( i, item ) {
-      $( "<img/>" ).attr( "src", item.media.m ).appendTo( "#images" );
-      if ( i === 3 ) {
-        return false;
-      }
-    });
-  });
-})();
 
-		url = "https://spreadsheets.google.com/feeds/list/0AiE7hdFAKPqldE1yOUwzUFh0VkNOVVZ1TWhseGRkdkE/od6/public/values?alt=json-in-script&callback=?"
-		death_list = []; // all the chapters
-		
-	
-		$.getJSON(url,
+// 1. Load data
+        
+	url = "https://spreadsheets.google.com/feeds/list/0AiE7hdFAKPqldE1yOUwzUFh0VkNOVVZ1TWhseGRkdkE/od6/public/values?alt=json-in-script&callback=?"
+	rows = []; // all the deaths logged
+	data_array = [[Date.UTC(2013, 3, 23),1],[Date.UTC(2013, 3, 23),3],[Date.UTC(2013, 3, 24),1],[Date.UTC(2013, 3, 25),5]];
+
+	$.getJSON(url,
 		function(data) {
-			// parse JSON and push data into the list of grants
+		// parse JSON and push data into the list of Spelunky deaths
 			for (i=0;i<data.feed.entry.length;i++) {
 				var entry = data.feed.entry[i];
-				var death = {
-					date: entry["gsx$date"].$t,
-					time: entry["gsx$time"].$t,
-					level: entry["gsx$level"].$t,
-					death: entry["gsx$death"].$t
+				var xlrow = {
+				date: entry["gsx$date"].$t,
+				time: entry["gsx$minutes"].$t,
+				level: entry["gsx$level"].$t,
+				death: entry["gsx$death"].$t
 				};
-
-				death_list.push(death);
+			rows.push(xlrow);
 			}
-	});
+		});
 
-	var array = []
-	
-				
-		$('#container').highcharts({
-            chart: {
-                type: 'line',
-                marginRight: 130,
-                marginBottom: 25
+//2. Parse spreadsheet rows to format for charting: [Date.UTC(Year, Month-1, Day), time]
+// for i in rows, format, data_array.push(formatted)
+
+		//data_array.push([3,4]);
+
+//3. Initiate chart		
+	$('#container').highcharts({
+				chart: {
+                type: 'scatter'
             },
             title: {
-                text: 'Monthly Average Temperature',
-                x: -20 //center
+                text: 'Length of game'
             },
             subtitle: {
-                text: 'Source: WorldClimate.com',
-                x: -20
+                text: ':)'
             },
-            xAxis: {
-                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-            },
+			
+			xAxis: {
+				type: 'datetime',
+				dateTimeLabelFormats: {
+					month: '%e. %b',
+					day: '%b %e',
+					hour: '%b %e',
+					year: '%b'
+					}
+				},
+				
             yAxis: {
                 title: {
-                    text: 'Temperature (°C)'
+                    text: 'Game length (minutes)'
                 },
-                plotLines: [{
-                    value: 0,
-                    width: 1,
-                    color: '#808080'
-                }]
+                min: 0
             },
+			
             tooltip: {
-                valueSuffix: '°C'
+                formatter: function() {
+                        return Highcharts.dateFormat('<b>%b %e', this.x) +'</b><br>'+ this.y +' minutes';
+                }
             },
-            legend: {
-                layout: 'vertical',
-                align: 'right',
-                verticalAlign: 'top',
-                x: -10,
-                y: 100,
-                borderWidth: 0
-            },
+            
             series: [{
-                name: 'Tokyo',
-                data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
-            }, {
-                name: 'New York',
-                data: [-0.2, 0.8, 5.7, 11.3, 17.0, 22.0, 24.8, 24.1, 20.1, 14.1, 8.6, 2.5]
-            }, {
-                name: 'Berlin',
-                data: [-0.9, 0.6, 3.5, 8.4, 13.5, 17.0, 18.6, 17.9, 14.3, 9.0, 3.9, 1.0]
-            }, {
-                name: 'London',
-                data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
-            }]
+                //data: [[Date.UTC(2013, 3, 23),1],[Date.UTC(2013, 3, 24),1],[Date.UTC(2013, 3, 25),5]]
+				data: data_array
+			}]
         });
     });
