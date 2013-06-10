@@ -36,6 +36,47 @@ $(function () {
 		}
 
 		// TODO: add the plotting function here
+		$('#container').highcharts({
+					chart: {
+					type: 'scatter'
+				},
+				title: {
+					text: 'Length of game'
+				},
+				subtitle: {
+					text: ':)'
+				},
+				
+				xAxis: {
+					type: 'datetime',
+					dateTimeLabelFormats: {
+						month: '%e. %b',
+						day: '%b %e',
+						hour: '%b %e',
+						year: '%b'
+						}
+					},
+					
+				yAxis: {
+					title: {
+						text: 'Game length (minutes)'
+					},
+					min: 0
+				},
+				
+				tooltip: {
+					formatter: function() {
+							return Highcharts.dateFormat('<b>%b %e', this.x) +'</b><br>'+ this.y +' minutes';
+					}
+				},
+				
+				series: [{
+					//data: [[Date.UTC(2013, 3, 23),1],[Date.UTC(2013, 3, 24),1],[Date.UTC(2013, 3, 25),5]]
+					data: test
+					// test[200] = [1369440000000, 5.95], which plots fine. I don't get it!
+				}]
+			});		
+		
 	});
 
 		//test.push(rows[0].time);
@@ -49,44 +90,7 @@ $(function () {
 		//data_array.push([3,4]);
 
 	//3. Initiate chart		
-	$('#container').highcharts({
-				chart: {
-                type: 'scatter'
-            },
-            title: {
-                text: 'Length of game'
-            },
-            subtitle: {
-                text: ':)'
-            },
-			
-			xAxis: {
-				type: 'datetime',
-				dateTimeLabelFormats: {
-					month: '%e. %b',
-					day: '%b %e',
-					hour: '%b %e',
-					year: '%b'
-					}
-				},
-				
-            yAxis: {
-                title: {
-                    text: 'Game length (minutes)'
-                },
-                min: 0
-            },
-			
-            tooltip: {
-                formatter: function() {
-                        return Highcharts.dateFormat('<b>%b %e', this.x) +'</b><br>'+ this.y +' minutes';
-                }
-            },
-            
-            series: [{
-                //data: [[Date.UTC(2013, 3, 23),1],[Date.UTC(2013, 3, 24),1],[Date.UTC(2013, 3, 25),5]]
-				data: [data_array[0], data_array[1], data_array[2], [Date.UTC(2013,3,6),5.1], [1365206400000, 5.2], test[200]]
-				// test[200] = [1369440000000, 5.95], which plots fine. I don't get it!
-			}]
-        });
+
     });
+	
+
